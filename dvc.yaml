@@ -1,0 +1,11 @@
+stages:
+  prepare:
+    cmd: python src/prepare.py data/diamonds.csv
+    deps:
+    - data/diamonds.csv
+    - src/prepare.py
+    params:
+    - prepare.seed
+    - prepare.split
+    outs:
+    - data/prepared

@@ -1,0 +1,23 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python src/prepare.py data/diamonds.csv
+    deps:
+    - path: data/diamonds.csv
+      hash: md5
+      md5: bb67f2679c70a62b35220f7e90a6174a
+      size: 3192560
+    - path: src/prepare.py
+      hash: md5
+      md5: ad223963d596ddde266d1bf0b372ca2c
+      size: 4208
+    params:
+      params.yaml:
+        prepare.seed: 42
+        prepare.split: 0.75
+    outs:
+    - path: data/prepared
+      hash: md5
+      md5: dcdc45bbe9a6a35c1b74b848ed232489.dir
+      size: 1802823
+      nfiles: 6
