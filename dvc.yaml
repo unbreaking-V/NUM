@@ -9,3 +9,30 @@ stages:
     - prepare.split
     outs:
     - data/prepared
+  train:
+    cmd: python src/train.py data/prepared/ data/models/
+    deps:
+    - data/prepared/
+    - src/train.py
+    params:
+    - train.colsample_bytree
+    - train.cv
+    - train.learning_rate
+    - train.max_depth
+    - train.min_child_weight
+    - train.n_estimators
+    - train.n_jobs
+    - train.objective
+    - train.subsample
+    - train.verbose
+    outs:
+    - data/models/
+  evaluate:
+    cmd: python src/evaluate.py data/models/ data/prepared/ scores.json
+    deps:
+    - data/models/
+    - data/prepared/
+    - src/evaluate.py
+    metrics:
+    - scores.json:
+        cache: false

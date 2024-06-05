@@ -9,15 +9,86 @@ stages:
       size: 3192560
     - path: src/prepare.py
       hash: md5
-      md5: ad223963d596ddde266d1bf0b372ca2c
-      size: 4208
+      md5: 549653a1125577a6c1ab6b36c03025fa
+      size: 2775
     params:
       params.yaml:
-        prepare.seed: 42
-        prepare.split: 0.75
+        prepare.seed: 0
+        prepare.split: 0.2
     outs:
     - path: data/prepared
       hash: md5
-      md5: dcdc45bbe9a6a35c1b74b848ed232489.dir
-      size: 1802823
+      md5: bc038d40c1023260a3d805712094967a.dir
+      size: 2057566
       nfiles: 6
+  train:
+    cmd: python src/train.py data/prepared/ data/models/
+    deps:
+    - path: data/prepared/
+      hash: md5
+      md5: bc038d40c1023260a3d805712094967a.dir
+      size: 2057566
+      nfiles: 6
+    - path: src/train.py
+      hash: md5
+      md5: cfd0140308ea0ac029fafd6ee5e44ed5
+      size: 1623
+    params:
+      params.yaml:
+        train.colsample_bytree:
+        - 0.5
+        - 0.7
+        - 0.9
+        train.cv: 5
+        train.learning_rate:
+        - 0.0001
+        - 0.001
+        - 0.01
+        train.max_depth:
+        - 3
+        - 5
+        - 7
+        train.min_child_weight:
+        - 3
+        - 5
+        - 7
+        train.n_estimators:
+        - 200
+        - 300
+        - 500
+        train.n_jobs: -1
+        train.objective:
+        - reg:squarederror
+        train.subsample:
+        - 0.5
+        - 0.7
+        - 0.9
+        train.verbose: 1
+    outs:
+    - path: data/models/
+      hash: md5
+      md5: 1773707820fbee3402853ade80794385.dir
+      size: 4079639
+      nfiles: 1
+  evaluate:
+    cmd: python src/evaluate.py data/models/ data/prepared/ scores.json
+    deps:
+    - path: data/models/
+      hash: md5
+      md5: 1773707820fbee3402853ade80794385.dir
+      size: 4079639
+      nfiles: 1
+    - path: data/prepared/
+      hash: md5
+      md5: bc038d40c1023260a3d805712094967a.dir
+      size: 2057566
+      nfiles: 6
+    - path: src/evaluate.py
+      hash: md5
+      md5: 942d425aab6381865c8abbb45da18271
+      size: 1802
+    outs:
+    - path: scores.json
+      hash: md5
+      md5: 2aa0e770be5b7e743b2c63e1f6e1d3a3
+      size: 180
